@@ -25,12 +25,10 @@ export default function Dashboard({ user }) {
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
-  const [message, setMessage] = useState({
-    to: "",
-    sound: "default",
-    title: "",
-    body: "",
-  });
+  const [messageTitle, setMessageTitle] = useState("");
+  const [messageBody, setMessageBody] = useState("");
+  const [messageTo, setMessageTo] = useState("");
+
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       setExpoPushToken(token);
@@ -97,7 +95,11 @@ export default function Dashboard({ user }) {
     }
     return token;
   };
-  const sendPushNotification = async () => {
+  const sendPushNotification = async (
+    messageTitle,
+    messageBody,
+    messageToken
+  ) => {
     await fetch("https://exp.host/--/api/v2/push/send", {
       method: "POST",
       headers: {
@@ -105,7 +107,12 @@ export default function Dashboard({ user }) {
         "Accept-encoding": "gzip, deflate",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(message),
+      body: JSON.stringify({
+        to: messageToken,
+        sound: "default",
+        body: messageBody,
+        title: messageTitle,
+      }),
     })
       .then(() => {
         console.warn("Success");
@@ -134,21 +141,21 @@ export default function Dashboard({ user }) {
             style={styles.textInput}
             placeholder="Enter Expo Token of a User"
             onChangeText={(token) => {
-              setMessage({ to: token });
+              setMessageTo(token.trim());
             }}
           />
           <TextInput
             style={styles.textInput}
             placeholder="Title"
-            onChangeText={(titleMsg) => {
-              setMessage({ title: titleMsg });
+            onChangeText={(title) => {
+              setMessageTitle(title.trim());
             }}
           />
           <TextInput
             style={styles.textInput}
             placeholder="Body"
             onChangeText={(bodyMsg) => {
-              setMessage({ body: bodyMsg });
+              setMessageBody(bodyMsg.trim());
             }}
           />
         </View>
@@ -157,7 +164,7 @@ export default function Dashboard({ user }) {
             type="primary"
             content={"Send Notification"}
             run={async () => {
-              await sendPushNotification();
+              await sendPushNotification(messageTitle, messageBody, messageTo);
             }}
           />
           <StyledButton
