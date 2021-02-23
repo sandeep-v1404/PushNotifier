@@ -11,6 +11,7 @@ import DismissKeyboard from "../DismissKeyboard";
 import * as Notifications from "expo-notifications";
 
 import Constants from "expo-constants";
+import Calendar from "../Calendar";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -126,18 +127,14 @@ export default function Dashboard({ user }) {
       <View style={styles.container}>
         <View style={styles.textContainer}>
           <Text style={styles.textUser}>Welcome {user.displayName} !</Text>
-
           <Text style={styles.text}>Your Expo Token</Text>
           <Text style={styles.textToken} selectable={true}>
             {expoPushToken}
           </Text>
-          <Text style={styles.textDescription}>
-            Share it with your friends and chat Anonmously
-          </Text>
         </View>
 
         <View style={styles.textInputContainer}>
-          <TextInput
+          {/* <TextInput
             style={styles.textInput}
             placeholder="Enter Expo Token of a User"
             onChangeText={(token) => {
@@ -157,16 +154,17 @@ export default function Dashboard({ user }) {
             onChangeText={(bodyMsg) => {
               setMessageBody(bodyMsg.trim());
             }}
-          />
+          />*/}
+          <Calendar></Calendar>
         </View>
         <View style={styles.buttonContainer}>
-          <StyledButton
+          {/* <StyledButton
             type="primary"
             content={"Send Notification"}
             run={async () => {
               await sendPushNotification(messageTitle, messageBody, messageTo);
             }}
-          />
+          /> */}
           <StyledButton
             type="secondary"
             content={"Log Out"}
